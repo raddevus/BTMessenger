@@ -35,12 +35,19 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listViewItems);
         btDeviceSpinner = (Spinner) findViewById(R.id.btDeviceSpinner);
         btDeviceSpinner.setAdapter(adapter);
+
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (btAdapter != null) {
+            if (!btAdapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            }
+            pairedDevices = GetPairedDevices(btAdapter);
+            //DiscoverAvailableDevices();
+        }
     }
 
-
-
     private void sendPasswordViaBT(){
-
         if (btAdapter == null) {
             btAdapter = BluetoothAdapter.getDefaultAdapter();
         }
