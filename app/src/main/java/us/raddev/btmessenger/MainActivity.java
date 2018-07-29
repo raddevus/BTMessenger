@@ -8,7 +8,11 @@ import android.os.Bundle;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
@@ -26,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private Spinner btDeviceSpinner;
     private static ArrayAdapter<String> adapter;
     ArrayList<String> listViewItems = new ArrayList<String>();
+    private EditText textToSend;
+    private Button sendButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         btDeviceSpinner = (Spinner) findViewById(R.id.btDeviceSpinner);
         btDeviceSpinner.setAdapter(adapter);
 
+        textToSend = (EditText)findViewById(R.id.textToSend);
+        sendButton = (Button)findViewById(R.id.sendButton);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         if (btAdapter != null) {
             if (!btAdapter.isEnabled()) {
@@ -45,9 +53,38 @@ public class MainActivity extends AppCompatActivity {
             pairedDevices = GetPairedDevices(btAdapter);
             //DiscoverAvailableDevices();
         }
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v)
+            {
+                if (MainActivity.btCurrentDeviceName == ""){
+                    return;
+                }
+                sendTextViaBT();
+                writeData();
+            }
+        });
+
+        btDeviceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                btCurrentDeviceName = String.valueOf(btDeviceSpinner.getSelectedItem());
+                //saveDeviceNamePref();
+                Log.d("MainActivity", "DeviceInfo : " + btCurrentDeviceName);
+                //logViewAdapter.add("DeviceInfo : " + btCurrentDeviceName);
+                //logViewAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+        });
     }
 
-    private void sendPasswordViaBT(){
+
+
+    private void sendTextViaBT(){
         if (btAdapter == null) {
             btAdapter = BluetoothAdapter.getDefaultAdapter();
         }
@@ -87,14 +124,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void writeData(){
-//        String clipText = readClipboard();
-//        if (isSendEnter){
-//            clipText += "\n";
-//        }
-        String clipText = "test";
-        Log.d("MainActivity", "on clipboard : " + clipText);
-        if (!clipText.equals("")){
-            btHandler.writeMessage(clipText);
+
+        String outText = textToSend.getText().toString();
+        Log.d("MainActivity", "sending text : " + outText);
+        if (!outText.equals("")){
+            btHandler.writeMessage(outText);
             try {
                 Thread.sleep(200);
                 btHandler.cancel();
