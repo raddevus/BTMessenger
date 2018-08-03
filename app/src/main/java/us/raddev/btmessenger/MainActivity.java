@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> listViewItems = new ArrayList<String>();
     private EditText textToSend;
     private Button sendButton;
+    private Button receiveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,12 @@ public class MainActivity extends AppCompatActivity {
                 writeData();
             }
         });
+
+        receiveButton.setOnClickListener(new View.OnClickListener() {
+             public void onClick(View v) {
+
+             }
+         });
 
         btDeviceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +20,7 @@ public class BtHandler extends Thread {
     private OutputStream mmOutStream;
     private InputStream mmInStream;
 
-    public BtHandler(BluetoothDevice device, UUID uuid,  ArrayAdapter<String> logViewAdapter) {
+    public BtHandler(BluetoothDevice device, UUID uuid,  ArrayAdapter<String> logViewAdapter, TextView tv) {
         // Use a temporary object that is later assigned to mmSocket,
         // because mmSocket is final
 
